@@ -1,0 +1,84 @@
+import 'package:due_kasir/controller/report_controller.dart';
+import 'package:due_kasir/controller/usuario_controller.dart';
+import 'package:due_kasir/model/venta_model.dart';
+import 'package:due_kasir/utils/constant.dart';
+import 'package:due_kasir/widget/indicator.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:signals/signals_flutter.dart';
+
+class ReportPie extends StatelessWidget {
+  final double width;
+
+  const ReportPie({super.key, required this.width});
+
+  @override
+  Widget build(BuildContext context) {
+    final users = usuarioController.usuarios.watch(context);
+    final reportUsers = reportController.reporteUsuario.watch(context);
+    final report = reportController.reporte.watch(context);
+    return ShadCard(
+      width: width,
+      title: const Text('Admin'),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (reportUsers.hasValue && report.hasValue)
+            SizedBox(
+              width: 150,
+              height: 125,
+              child: PieChart(
+                PieChartData(
+                  borderData: FlBorderData(show: false),
+                  sectionsSpace: 0,
+                  centerSpaceRadius: 35,
+                  sections:
+                      showingSections(reportUsers.value!, report.value!.length),
+                ),
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: users.value
+                      ?.map(
+                        (u) => Indicator(
+                          color: converColor(u.id!),
+                          text: u.nombre,
+                          isSquare: false,
+                        ),
+                      )
+                      .toList() ??
+                  [],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  List<PieChartSectionData> showingSections(
+      Map<int, List<VentaModel>> user, int total) {
+    List<PieChartSectionData> listUser = [];
+    for (var key in user.entries) {
+      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
+      listUser.add(
+        PieChartSectionData(
+          color: converColor(key.key),
+          value: total / key.value.length,
+          title: '${(100 * (key.value.length / total)).toStringAsFixed(2)}%',
+          radius: 30,
+          titleStyle: const TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: shadows,
+          ),
+        ),
+      );
+    }
+    return listUser;
+  }
+}
