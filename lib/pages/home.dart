@@ -1,11 +1,14 @@
 import 'package:due_kasir/controller/auth_controller.dart';
 import 'package:due_kasir/pages/drawer.dart';
 import 'package:due_kasir/pages/home/users_sheet.dart';
+import 'package:due_kasir/pages/users/user_clave_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../service/database.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -41,25 +44,36 @@ class Home extends StatelessWidget {
                 Text('Cuenta Login', style: theme.textTheme.h4),
                 if (user == null)
                   ShadButton.outline(
+                    backgroundColor: Colors.green,
                     child: const Text('Login'),
                     onPressed: () => context.push('/login'),
-                  ),
+                  )
+                else
+                  ShadButton.outline(
+                    backgroundColor: Colors.red,
+                    child: const Text('Logout'),
+                    onPressed: () async {
+                      await Database().logoutUser();
+                      authController.usuarioLogin.refresh();
+                    },
+                  )
               ],
             ),
             description: const Text('Asegúrate de haber iniciado sesión con tu cuenta'),
             footer: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                ShadButton(
-                  child: const Text('Cambiar'),
-                  onPressed: () {
-                    showShadSheet(
-                      side: ShadSheetSide.right,
-                      context: context,
-                      builder: (context) => const UsersSheet(),
-                    );
-                  },
-                ),
+                if (user != null)
+                  ShadButton(
+                    child: const Text('Cambiar Contraseña'),
+                    onPressed: () {
+                      showShadSheet(
+                        side: ShadSheetSide.right,
+                        context: context,
+                        builder: (context) => const UserClaveSheet(),
+                      );
+                    },
+                  ),
               ],
             ),
             child: Padding(

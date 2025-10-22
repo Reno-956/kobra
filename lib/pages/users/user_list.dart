@@ -2,8 +2,10 @@ import 'package:due_kasir/controller/usuario_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:signals/signals_flutter.dart';
 
+import '../../service/database.dart';
 import '../../utils/extension.dart';
 
 class UserList extends HookWidget {
@@ -42,12 +44,59 @@ class UserList extends HookWidget {
                         title: Text(user.nombre),
                         subtitle: Text(
                             '${user.identificacion ?? '-'}\nUsuario: ${user.correo ?? '-'}'),
-                        trailing:
-                            const Icon(Icons.keyboard_arrow_right_outlined),
-                        onTap: () {
-                          usuarioController.usuarioSelected.value = user;
-                          context.push('/users/form');
-                        },
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.keyboard_arrow_right_outlined),
+                              onPressed: () {
+                                usuarioController.usuarioSelected.value = user;
+                                context.push('/users/form');
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.lock_reset, color: Colors.red),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text("Confirmar"),
+                                    content: Text(
+                                      "¿Deseas restablecer la contraseña de ${user.nombre}?\n"
+                                          "La nueva será su identificación.",
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text("Cancelar"),
+                                        onPressed: () => Navigator.pop(ctx),
+                                      ),
+                                      TextButton(
+                                        child: const Text("Aceptar"),
+                                        onPressed: () async {
+                                          Navigator.pop(ctx);
+                                          await Database()
+                                              .actualizarClaveUsuarioPorUserId(user.id!, user.identificacion);
+
+                                          if (context.mounted) {
+                                            ShadToaster.of(context).show(
+                                              const ShadToast(
+                                                backgroundColor: Colors.green,
+                                                title: Text("Contraseña restablecida"),
+                                                description: Text(
+                                                  "La nueva contraseña es la identificación del usuario.",
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       );
                     }).toList(),
                   );
@@ -59,6 +108,7 @@ class UserList extends HookWidget {
                     DataColumn(label: Text('Nombre')),
                     DataColumn(label: Text('Perfil')),
                     DataColumn(label: Text('Editar')),
+                    DataColumn(label: Text('Restablecer')),
                   ],
                   rows: users.map((user) {
                     return DataRow(cells: [
@@ -72,6 +122,50 @@ class UserList extends HookWidget {
                           usuarioController.usuarioSelected.value = user;
                           context.push('/users/form');
                         },
+                      ),
+                      DataCell(
+                        IconButton(
+                          icon: const Icon(Icons.lock_reset, color: Colors.red),
+                          tooltip: "Restablecer contraseña",
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text("Confirmar"),
+                                content: Text(
+                                  "¿Seguro que deseas restablecer la contraseña de ${user.nombre}?\n"
+                                      "La nueva será su número de identificación.",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    child: const Text("Cancelar"),
+                                    onPressed: () => Navigator.pop(ctx),
+                                  ),
+                                  TextButton(
+                                    child: const Text("Aceptar"),
+                                    onPressed: () async {
+                                      Navigator.pop(ctx);
+                                      await Database()
+                                          .actualizarClaveUsuarioPorUserId(user.id!, user.identificacion);
+
+                                      if (context.mounted) {
+                                        ShadToaster.of(context).show(
+                                          const ShadToast(
+                                            backgroundColor: Colors.green,
+                                            title: Text("Contraseña restablecida"),
+                                            description: Text(
+                                              "La nueva contraseña es la identificación del usuario.",
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ]);
                   }).toList(),

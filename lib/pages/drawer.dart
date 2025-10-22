@@ -192,7 +192,7 @@ class NavDrawer extends StatelessWidget {
                   } else if (item == 'logout') {
                     context.pop();
                     await Database().logoutUser();
-                    authController.usuarioLogin.refresh(); ;
+                    authController.usuarioLogin.refresh();
                   } else if (item == 'sync') {
                     context.pop();
                     context.go('/sync');
