@@ -5,7 +5,7 @@ enum TypePayment {
 
   String get message {
     return switch (this) {
-      cash => 'Contado',
+      cash => 'Efectivo',
       qris => 'Credito',
       transfer => 'Transferencia',
     };

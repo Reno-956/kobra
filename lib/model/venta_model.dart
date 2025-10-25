@@ -16,7 +16,6 @@ class VentaModel {
   String? informacion;
   DateTime fechaCreacion = DateTime.now();
   bool? esSincronizado;
-  String? consumidorFinal;
 
   VentaModel({
     this.id,
@@ -29,7 +28,6 @@ class VentaModel {
     this.informacion,
     required this.fechaCreacion,
     this.esSincronizado,
-    this.consumidorFinal,
   });
 
   factory VentaModel.fromJson(json) {
@@ -43,7 +41,6 @@ class VentaModel {
       cliente: json['cliente'],
       informacion: json['informacion'],
       fechaCreacion: DateTime.parse(json['fechaCreacion']),
-      consumidorFinal: json['consumidorFinal'],
     );
   }
 
@@ -58,7 +55,6 @@ class VentaModel {
       'cliente': cliente,
       'informacion': informacion,
       'fechaCreacion': fechaCreacion.toIso8601String(),
-      'consumidorFinal': consumidorFinal,
     };
   }
 }

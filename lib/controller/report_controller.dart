@@ -14,8 +14,8 @@ class ReportController {
   final reporteAyer =
       futureSignal(() async => Database().obtenerReporteAyer());
   final reporteUsuario = futureSignal(() async => Database().obtenerVentasPorUser());
-  final reporetIngresos = futureSignal(
-    () async => Database().obtenerVentasPorFecha(
+  final reporteIngresos = futureSignal(
+    () async => Database().obtenerVentasPorFechaSinAbono(
         start: reportController.dateRange.first,
         end: reportController.dateRange.last),
   );

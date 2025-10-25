@@ -10,7 +10,7 @@ class ReportRevenue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reportIncome = reportController.reporetIngresos.watch(context);
+    final reportIncome = reportController.reporteIngresos.watch(context);
     if (reportIncome.hasValue && reportIncome.value != null) {
       return SizedBox(
         height: 250,

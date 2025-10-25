@@ -24,7 +24,7 @@ class _ReportVisitorWeekLyState extends State<ReportVisitorWeekLy> {
 
   @override
   void initState() {
-    final reportIncome = reportController.reporetIngresos.watch(context);
+    final reportIncome = reportController.reporteIngresos.watch(context);
     if (reportIncome.value != null) {
       initiateData(reportIncome.value!);
     } else {
@@ -84,7 +84,7 @@ class _ReportVisitorWeekLyState extends State<ReportVisitorWeekLy> {
 
   @override
   Widget build(BuildContext context) {
-    final reportIncome = reportController.reporetIngresos.watch(context);
+    final reportIncome = reportController.reporteIngresos.watch(context);
     return ShadCard(
       title: Wrap(
         alignment: WrapAlignment.spaceBetween,

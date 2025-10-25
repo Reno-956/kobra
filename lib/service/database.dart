@@ -492,6 +492,16 @@ class Database {
     isar.writeTxnSync<int>(() => isar.ventaModels.putSync(val));
   }
 
+  Future<void> agregarVentaCliente(VentaModel venta, ClienteModel? cliente) async {
+    final isar = await db;
+    await isar.writeTxn(() async {
+      await isar.ventaModels.put(venta);
+      if (cliente != null) {
+        await isar.clienteModels.put(cliente);
+      }
+    });
+  }
+
   Future<void> syncItemPenjualan(VentaModel val) async {
     /*if (isDeviceConnected.value && supabase.auth.currentUser != null) {
       _supabaseHelper.addReport(val.toJson());
@@ -647,6 +657,57 @@ class Database {
     final Map<DateTime, List<VentaModel>> listOfOrders = items.groupListsBy(
         (order) => DateTime(order.fechaCreacion.year, order.fechaCreacion.month,
             order.fechaCreacion.day));
+
+    return listOfOrders;
+  }
+
+  Future<Map<DateTime, List<VentaModel>>> obtenerVentasPorFechaSinAbono({
+    required DateTime start,
+    required DateTime end,
+  }) async {
+    final isar = await db;
+    final collection = isar.collection<VentaModel>();
+
+    // Obtiene todas las ventas del rango de fechas
+    final items = await collection
+        .filter()
+        .fechaCreacionBetween(
+      start.copyWith(hour: 0, minute: 0, second: 0),
+      end.copyWith(hour: 23, minute: 59, second: 59),
+    )
+        .findAll();
+
+    // Filtra o ajusta las ventas que contienen "abonos"
+    final ventasSinAbono = items.map((venta) {
+      // Elimina productos con código '001' y ajusta total
+      final productosValidos = venta.items
+          .where((item) => item.codigoPrincipal != '001')
+          .toList();
+
+      if (productosValidos.isEmpty) {
+        // Si la venta solo tenía abonos, se ignora
+        return null;
+      }
+
+      // Recalcula el total excluyendo abonos
+      final nuevoTotal = productosValidos.fold<double>(
+        0.0,
+            (suma, item) => suma + (item.precioUnitario ?? 0) * (item.cantidad ?? 0),
+      );
+
+      return venta
+        ..items = productosValidos
+        ..precioTotal = nuevoTotal;
+    }).whereType<VentaModel>().toList(); // Quita los nulls
+
+    // Agrupar por fecha
+    final Map<DateTime, List<VentaModel>> listOfOrders = ventasSinAbono.groupListsBy(
+          (order) => DateTime(
+        order.fechaCreacion.year,
+        order.fechaCreacion.month,
+        order.fechaCreacion.day,
+      ),
+    );
 
     return listOfOrders;
   }

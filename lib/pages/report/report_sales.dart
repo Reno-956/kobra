@@ -1,6 +1,7 @@
 import 'package:due_kasir/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import '../../model/cliente_model.dart';
 import '../../model/usuario_model.dart';
 import '../../model/venta_model.dart';
 import '../../service/database.dart';
@@ -41,9 +42,18 @@ class ReportSales extends StatelessWidget {
                         spacing: 5,
                         runSpacing: 5,
                         children: [
-                          Text(
-                            '${venta.id} -',
-                            style: ShadTheme.of(context).textTheme.small,
+                          FutureBuilder<ClienteModel?>(
+                            future: venta.cliente == null
+                                ? Future.value(null)
+                                : Database().obtenerClientePorId(venta.cliente!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                                return Text(
+                                  '${snapshot.data?.nombre ?? 'Consumidor Final'} -',
+                                );
+                              }
+                              return const Text('Consumidor Final -');
+                            },
                           ),
                           FutureBuilder<UsuarioModel?>(
                             future: Database().obtenerUserPorId(venta.usuario),

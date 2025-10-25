@@ -13,7 +13,7 @@ class ReportVisitors extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reportIncome = reportController.reporetIngresos.watch(context);
+    final reportIncome = reportController.reporteIngresos.watch(context);
     return ShadCard(
       width: width,
       title: const Text('Clientes Totales'),

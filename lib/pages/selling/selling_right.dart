@@ -102,10 +102,25 @@ class SellingRightState extends State<SellingRight> {
               ),
               ShadButton(
                 onPressed: () async {
-                  if (sellingFormKey.currentState!.validate() &&
-                      tienda.hasValue) {
+                  if (sellingFormKey.currentState!.validate() && tienda.hasValue) {
+                    if (tipoPago == TypePayment.qris && cliente == null) {
+                      if (context.mounted) {
+                        ShadToaster.of(context).show(
+                          const ShadToast(
+                            backgroundColor: Colors.red,
+                            title: Text('Cliente requerido'),
+                            description: Text('Debe seleccionar un cliente para pagos a crédito.'),
+                          ),
+                        );
+                      }
+                      return;
+                    }
                     List<ProductItemModel> products = [];
+                    double valorAbono = 0;
                     for (ProductoModel p in listaCompras.value!.items) {
+                      if(p.codigoPrincipal == '001'){
+                        valorAbono += p.precioUnitario*p.cantidad;
+                      }
                       products.add(ProductItemModel()
                         ..id = p.id!
                         ..descripcion = p.descripcion
@@ -128,11 +143,31 @@ class SellingRightState extends State<SellingRight> {
                       cliente: cliente?.id,
                       fechaCreacion: DateTime.now(),
                       esSincronizado: true,
-                      consumidorFinal: consumidorFinal
                     );
                     if (products.isEmpty) return;
 
-                    await Database().agregarVenta(newItem).whenComplete(() {
+                    if (tipoPago == TypePayment.qris && cliente != null) {
+                      if (valorAbono != 0) {
+                        _mostrarError('No se puede abonar con crédito.');
+                        return;
+                      }
+                      cliente.saldoCredito += listaCompras.value?.precioTotal ?? 0.0;
+                    }
+
+                    if(valorAbono > 0){
+                      if (cliente == null) {
+                        _mostrarError('No se puede abonar a consumidor final.');
+                        return;
+                      }
+                      if (cliente.saldoCredito <= 0) {
+                        _mostrarError('Cliente no tiene saldo pendiente.');
+                        return;
+                      }
+                      cliente.saldoCredito -= valorAbono;
+                      if (cliente.saldoCredito < 0) cliente.saldoCredito = 0;
+                    }
+
+                    await Database().agregarVentaCliente(newItem, cliente).whenComplete(() {
                       if (context.mounted) {
                         ShadToaster.of(context).show(
                           const ShadToast(
@@ -147,7 +182,7 @@ class SellingRightState extends State<SellingRight> {
                       note.clear();
                       getIt.get<SellingController>().cliente.value = null;
                       getIt.get<SellingController>().tipoPago.value =
-                          TypePayment.qris;
+                          TypePayment.cash;
                       sellingFormKey.currentState?.reset();
                       getIt
                           .get<SellingController>()
@@ -155,21 +190,7 @@ class SellingRightState extends State<SellingRight> {
                           .whenComplete(() => getIt
                               .get<SellingController>()
                               .dispatch(CartPaid()));
-                    }
-                        /*if (context.mounted) {
-                          ShadToaster.of(context).show(
-                            ShadToast(
-                              backgroundColor: Colors.red,
-                              title: const Text('Error al guardar'),
-                              description:
-                                  Text(data['error'] ?? 'Error del servidor'),
-                            ),
-                          );
-                        }
-                        log('Error del servidor ($statusCode)');
-                        log('Detalles: ${data['error'] ?? 'Sin detalles'}');*/
-
-                    );
+                    });
                   }
                 },
                 icon: const Padding(
@@ -567,6 +588,16 @@ class SellingRightState extends State<SellingRight> {
   //     ),
   //   );
   // }
+
+  void _mostrarError(String mensaje) {
+    ShadToaster.of(context).show(
+      ShadToast(
+        backgroundColor: Colors.red,
+        title: const Text('Error'),
+        description: Text(mensaje),
+      ),
+    );
+  }
 
   void checkConnection() async {
     isConnected = await PrintBluetoothThermal.connectionStatus;

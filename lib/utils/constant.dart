@@ -31,6 +31,17 @@ double sumReport(List<VentaModel> numbers) {
   return sum;
 }
 
+double sumaReport(List<VentaModel> ventas) {
+  double total = 0;
+  for (var venta in ventas) {
+    bool esAbono = venta.items.any((item) => item.codigoPrincipal == '001');
+    if (!esAbono) {
+      total += venta.precioTotal;
+    }
+  }
+  return total;
+}
+
 converColor(int index) {
   if (index == 1) {
     return Colors.green;

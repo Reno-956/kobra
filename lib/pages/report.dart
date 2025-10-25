@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:due_kasir/controller/expenses_controller.dart';
 import 'package:due_kasir/controller/producto_controller.dart';
 import 'package:due_kasir/controller/report_controller.dart';
+import 'package:due_kasir/model/cliente_model.dart';
 import 'package:due_kasir/model/usuario_model.dart';
 import 'package:due_kasir/model/venta_model.dart';
 import 'package:due_kasir/pages/drawer.dart';
@@ -120,7 +121,7 @@ class _ReportState extends State<Report> {
                     ShadCard(
                       width: screen,
                       title: Text(
-                          currency.format(sumReport(reporteHoy.value ?? [])),
+                          currency.format(sumaReport(reporteHoy.value ?? [])),
                           style: theme.textTheme.h4),
                       description: const Text('Ventas totales hoy'),
                     ),
@@ -133,7 +134,7 @@ class _ReportState extends State<Report> {
                       ShadCard(
                         width: screen,
                         title: Text(
-                            currency.format(sumReport(reporte.value ?? [])),
+                            currency.format(sumaReport(reporte.value ?? [])),
                             style: theme.textTheme.h4),
                         description: const Text('Ganancias'),
                       ),
@@ -254,9 +255,18 @@ class _ReportState extends State<Report> {
                                       spacing: 5,
                                       runSpacing: 5,
                                       children: [
-                                        Text(
-                                          '${detail.id} -',
-                                          style: ShadTheme.of(context).textTheme.small,
+                                        FutureBuilder<ClienteModel?>(
+                                          future: detail.cliente == null
+                                              ? Future.value(null)
+                                              : Database().obtenerClientePorId(detail.cliente!),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                                              return Text(
+                                                '${snapshot.data?.nombre ?? 'Consumidor Final'} -',
+                                              );
+                                            }
+                                            return const Text('Consumidor Final -');
+                                          },
                                         ),
                                         FutureBuilder<UsuarioModel?>(
                                           future: Database().obtenerUserPorId(detail.usuario),

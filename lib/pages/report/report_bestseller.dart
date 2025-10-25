@@ -13,6 +13,8 @@ class ReportBestSeller extends HookWidget {
   final double width;
 
   const ReportBestSeller({super.key, required this.width});
+  bool esProductoVenta(ProductItemModel item) =>
+      item.codigoPrincipal != '001';
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class ReportBestSeller extends HookWidget {
           totalItem.value = listValue.length;
           final Map<int, ProductItemModel> prodcutos = {};
           for (var venta in listValue) {
-            for (var item in venta.items) {
+            for (var item in venta.items.where(esProductoVenta)) {
               if (prodcutos.containsKey(item.id)) {
                 prodcutos[item.id]!.cantidad =
                     (prodcutos[item.id]!.cantidad ?? 0) + (item.cantidad ?? 0);

@@ -13,6 +13,7 @@ class ClienteModel {
   DateTime? fechaCreacion;
   bool esSincronizado;
   String? correo;
+  double saldoCredito = 0;
 
   ClienteModel({
     this.id,

@@ -40,7 +40,7 @@ class CustomerList extends HookWidget {
                         contentPadding: EdgeInsets.zero,
                         title: Text(user.nombre),
                         subtitle: Text(
-                            '${user.identificacion ?? '-'}\nCorreo: ${user.correo ?? '-'}'),
+                            '${user.identificacion ?? '-'}\nSaldo: ${user.saldoCredito.toString()}'),
                         trailing:
                             const Icon(Icons.keyboard_arrow_right_outlined),
                         onTap: () {
@@ -56,8 +56,9 @@ class CustomerList extends HookWidget {
                     DataColumn(label: Text('Identificación')),
                     DataColumn(label: Text('Razon Social/Nombre')),
                     DataColumn(label: Text('Teléfono')),
-                    DataColumn(label: Text('Descripción')),
+                    DataColumn(label: Text('Dirección')),
                     DataColumn(label: Text('Correo')),
+                    DataColumn(label: Text('Saldo')),
                     DataColumn(label: Text('Editar')),
                   ],
                   rows: customers.map((user) {
@@ -66,7 +67,8 @@ class CustomerList extends HookWidget {
                       DataCell(Text(user.nombre)),
                       DataCell(Text(user.telefono ?? '-')),
                       DataCell(Text(user.direccion ?? '-')),
-                      DataCell(Text(user.correo ?? '')),
+                      DataCell(Text(user.correo ?? '-')),
+                      DataCell(Text(user.saldoCredito.toString())),
                       DataCell(
                         const Icon(Icons.keyboard_arrow_right_outlined),
                         onTap: () {

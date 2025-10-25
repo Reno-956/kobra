@@ -22,49 +22,44 @@ const VentaModelSchema = CollectionSchema(
       name: r'cliente',
       type: IsarType.long,
     ),
-    r'consumidorFinal': PropertySchema(
-      id: 1,
-      name: r'consumidorFinal',
-      type: IsarType.string,
-    ),
     r'descuento': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'descuento',
       type: IsarType.double,
     ),
     r'esSincronizado': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'esSincronizado',
       type: IsarType.bool,
     ),
     r'fechaCreacion': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'fechaCreacion',
       type: IsarType.dateTime,
     ),
     r'informacion': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'informacion',
       type: IsarType.string,
     ),
     r'items': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'items',
       type: IsarType.objectList,
       target: r'ProductItemModel',
     ),
     r'precioTotal': PropertySchema(
-      id: 7,
+      id: 6,
       name: r'precioTotal',
       type: IsarType.double,
     ),
     r'productoTotal': PropertySchema(
-      id: 8,
+      id: 7,
       name: r'productoTotal',
       type: IsarType.long,
     ),
     r'usuario': PropertySchema(
-      id: 9,
+      id: 8,
       name: r'usuario',
       type: IsarType.long,
     )
@@ -90,12 +85,6 @@ int _ventaModelEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.consumidorFinal;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.informacion;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -120,20 +109,19 @@ void _ventaModelSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.cliente);
-  writer.writeString(offsets[1], object.consumidorFinal);
-  writer.writeDouble(offsets[2], object.descuento);
-  writer.writeBool(offsets[3], object.esSincronizado);
-  writer.writeDateTime(offsets[4], object.fechaCreacion);
-  writer.writeString(offsets[5], object.informacion);
+  writer.writeDouble(offsets[1], object.descuento);
+  writer.writeBool(offsets[2], object.esSincronizado);
+  writer.writeDateTime(offsets[3], object.fechaCreacion);
+  writer.writeString(offsets[4], object.informacion);
   writer.writeObjectList<ProductItemModel>(
-    offsets[6],
+    offsets[5],
     allOffsets,
     ProductItemModelSchema.serialize,
     object.items,
   );
-  writer.writeDouble(offsets[7], object.precioTotal);
-  writer.writeLong(offsets[8], object.productoTotal);
-  writer.writeLong(offsets[9], object.usuario);
+  writer.writeDouble(offsets[6], object.precioTotal);
+  writer.writeLong(offsets[7], object.productoTotal);
+  writer.writeLong(offsets[8], object.usuario);
 }
 
 VentaModel _ventaModelDeserialize(
@@ -144,22 +132,21 @@ VentaModel _ventaModelDeserialize(
 ) {
   final object = VentaModel(
     cliente: reader.readLongOrNull(offsets[0]),
-    consumidorFinal: reader.readStringOrNull(offsets[1]),
-    descuento: reader.readDouble(offsets[2]),
-    esSincronizado: reader.readBoolOrNull(offsets[3]),
-    fechaCreacion: reader.readDateTime(offsets[4]),
+    descuento: reader.readDouble(offsets[1]),
+    esSincronizado: reader.readBoolOrNull(offsets[2]),
+    fechaCreacion: reader.readDateTime(offsets[3]),
     id: id,
-    informacion: reader.readStringOrNull(offsets[5]),
+    informacion: reader.readStringOrNull(offsets[4]),
     items: reader.readObjectList<ProductItemModel>(
-          offsets[6],
+          offsets[5],
           ProductItemModelSchema.deserialize,
           allOffsets,
           ProductItemModel(),
         ) ??
         [],
-    precioTotal: reader.readDouble(offsets[7]),
-    productoTotal: reader.readLong(offsets[8]),
-    usuario: reader.readLong(offsets[9]),
+    precioTotal: reader.readDouble(offsets[6]),
+    productoTotal: reader.readLong(offsets[7]),
+    usuario: reader.readLong(offsets[8]),
   );
   return object;
 }
@@ -174,16 +161,14 @@ P _ventaModelDeserializeProp<P>(
     case 0:
       return (reader.readLongOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
-    case 2:
       return (reader.readDouble(offset)) as P;
-    case 3:
+    case 2:
       return (reader.readBoolOrNull(offset)) as P;
-    case 4:
+    case 3:
       return (reader.readDateTime(offset)) as P;
-    case 5:
+    case 4:
       return (reader.readStringOrNull(offset)) as P;
-    case 6:
+    case 5:
       return (reader.readObjectList<ProductItemModel>(
             offset,
             ProductItemModelSchema.deserialize,
@@ -191,11 +176,11 @@ P _ventaModelDeserializeProp<P>(
             ProductItemModel(),
           ) ??
           []) as P;
-    case 7:
+    case 6:
       return (reader.readDouble(offset)) as P;
-    case 8:
+    case 7:
       return (reader.readLong(offset)) as P;
-    case 9:
+    case 8:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -360,160 +345,6 @@ extension VentaModelQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'consumidorFinal',
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'consumidorFinal',
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'consumidorFinal',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'consumidorFinal',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'consumidorFinal',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'consumidorFinal',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'consumidorFinal',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'consumidorFinal',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'consumidorFinal',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'consumidorFinal',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'consumidorFinal',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterFilterCondition>
-      consumidorFinalIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'consumidorFinal',
-        value: '',
       ));
     });
   }
@@ -1180,19 +1011,6 @@ extension VentaModelQuerySortBy
     });
   }
 
-  QueryBuilder<VentaModel, VentaModel, QAfterSortBy> sortByConsumidorFinal() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'consumidorFinal', Sort.asc);
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterSortBy>
-      sortByConsumidorFinalDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'consumidorFinal', Sort.desc);
-    });
-  }
-
   QueryBuilder<VentaModel, VentaModel, QAfterSortBy> sortByDescuento() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'descuento', Sort.asc);
@@ -1290,19 +1108,6 @@ extension VentaModelQuerySortThenBy
   QueryBuilder<VentaModel, VentaModel, QAfterSortBy> thenByClienteDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'cliente', Sort.desc);
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterSortBy> thenByConsumidorFinal() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'consumidorFinal', Sort.asc);
-    });
-  }
-
-  QueryBuilder<VentaModel, VentaModel, QAfterSortBy>
-      thenByConsumidorFinalDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'consumidorFinal', Sort.desc);
     });
   }
 
@@ -1412,14 +1217,6 @@ extension VentaModelQueryWhereDistinct
     });
   }
 
-  QueryBuilder<VentaModel, VentaModel, QDistinct> distinctByConsumidorFinal(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'consumidorFinal',
-          caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<VentaModel, VentaModel, QDistinct> distinctByDescuento() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'descuento');
@@ -1475,13 +1272,6 @@ extension VentaModelQueryProperty
   QueryBuilder<VentaModel, int?, QQueryOperations> clienteProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'cliente');
-    });
-  }
-
-  QueryBuilder<VentaModel, String?, QQueryOperations>
-      consumidorFinalProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'consumidorFinal');
     });
   }
 

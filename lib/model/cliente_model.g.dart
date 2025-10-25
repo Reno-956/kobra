@@ -47,8 +47,13 @@ const ClienteModelSchema = CollectionSchema(
       name: r'nombre',
       type: IsarType.string,
     ),
-    r'telefono': PropertySchema(
+    r'saldoCredito': PropertySchema(
       id: 6,
+      name: r'saldoCredito',
+      type: IsarType.double,
+    ),
+    r'telefono': PropertySchema(
+      id: 7,
       name: r'telefono',
       type: IsarType.string,
     )
@@ -108,7 +113,8 @@ void _clienteModelSerialize(
   writer.writeDateTime(offsets[3], object.fechaCreacion);
   writer.writeString(offsets[4], object.identificacion);
   writer.writeString(offsets[5], object.nombre);
-  writer.writeString(offsets[6], object.telefono);
+  writer.writeDouble(offsets[6], object.saldoCredito);
+  writer.writeString(offsets[7], object.telefono);
 }
 
 ClienteModel _clienteModelDeserialize(
@@ -125,8 +131,9 @@ ClienteModel _clienteModelDeserialize(
     id: id,
     identificacion: reader.readString(offsets[4]),
     nombre: reader.readString(offsets[5]),
-    telefono: reader.readStringOrNull(offsets[6]),
+    telefono: reader.readStringOrNull(offsets[7]),
   );
+  object.saldoCredito = reader.readDouble(offsets[6]);
   return object;
 }
 
@@ -150,6 +157,8 @@ P _clienteModelDeserializeProp<P>(
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
+      return (reader.readDouble(offset)) as P;
+    case 7:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -983,6 +992,72 @@ extension ClienteModelQueryFilter
   }
 
   QueryBuilder<ClienteModel, ClienteModel, QAfterFilterCondition>
+      saldoCreditoEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'saldoCredito',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<ClienteModel, ClienteModel, QAfterFilterCondition>
+      saldoCreditoGreaterThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'saldoCredito',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<ClienteModel, ClienteModel, QAfterFilterCondition>
+      saldoCreditoLessThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'saldoCredito',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<ClienteModel, ClienteModel, QAfterFilterCondition>
+      saldoCreditoBetween(
+    double lower,
+    double upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'saldoCredito',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<ClienteModel, ClienteModel, QAfterFilterCondition>
       telefonoIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1222,6 +1297,19 @@ extension ClienteModelQuerySortBy
     });
   }
 
+  QueryBuilder<ClienteModel, ClienteModel, QAfterSortBy> sortBySaldoCredito() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'saldoCredito', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ClienteModel, ClienteModel, QAfterSortBy>
+      sortBySaldoCreditoDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'saldoCredito', Sort.desc);
+    });
+  }
+
   QueryBuilder<ClienteModel, ClienteModel, QAfterSortBy> sortByTelefono() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'telefono', Sort.asc);
@@ -1326,6 +1414,19 @@ extension ClienteModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<ClienteModel, ClienteModel, QAfterSortBy> thenBySaldoCredito() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'saldoCredito', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ClienteModel, ClienteModel, QAfterSortBy>
+      thenBySaldoCreditoDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'saldoCredito', Sort.desc);
+    });
+  }
+
   QueryBuilder<ClienteModel, ClienteModel, QAfterSortBy> thenByTelefono() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'telefono', Sort.asc);
@@ -1384,6 +1485,12 @@ extension ClienteModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ClienteModel, ClienteModel, QDistinct> distinctBySaldoCredito() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'saldoCredito');
+    });
+  }
+
   QueryBuilder<ClienteModel, ClienteModel, QDistinct> distinctByTelefono(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1435,6 +1542,12 @@ extension ClienteModelQueryProperty
   QueryBuilder<ClienteModel, String, QQueryOperations> nombreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'nombre');
+    });
+  }
+
+  QueryBuilder<ClienteModel, double, QQueryOperations> saldoCreditoProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'saldoCredito');
     });
   }
 

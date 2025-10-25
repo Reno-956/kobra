@@ -3,6 +3,9 @@ import 'package:due_kasir/service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:signals/signals_flutter.dart';
+
+import '../../controller/auth_controller.dart';
 
 class ReportDeleteDialog extends StatefulWidget {
   final int id;
@@ -20,6 +23,8 @@ class _ReportDeleteDialogState extends State<ReportDeleteDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = authController.usuarioLogin.watch(context);
+    final usuario = auth.value?.user.value;
     return ShadForm(
       key: reportFormKey,
       child: ShadDialog(
@@ -32,7 +37,8 @@ class _ReportDeleteDialogState extends State<ReportDeleteDialog> {
           ShadButton(
               onPressed: () async {
                 if (reportFormKey.currentState!.validate()) {
-                  if (_password.text == '111111') {
+                  final isValid = await Database().validarClaveUsuario(usuario!.correo! , _password.text);
+                  if (isValid) {
                     await Database().eliminarVenta(widget.id);
                     await reportController.reporte.refresh();
                     await reportController.reporteHoy.refresh();
