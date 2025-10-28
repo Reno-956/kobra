@@ -80,12 +80,15 @@ class InventoryForm extends HookWidget {
                             : null,
                         label: const Text('Código Principal'),
                         placeholder: const Text('Ej: 001'),
+                        enabled: editingCodigoPrincipal.text != '001',
                       ),
                     ),
                     BarcodeKeyboardListener(
                       bufferDuration: const Duration(milliseconds: 200),
                       onBarcodeScanned: (barcode) async {
-                        editingCodigoPrincipal.text = barcode.replaceAll('½', '-');
+                        if (editingCodigoPrincipal.text != '001') {
+                          editingCodigoPrincipal.text = barcode.replaceAll('½', '-');
+                        }
                       },
                       child: const Padding(
                         padding: EdgeInsets.only(bottom: 5.0),
@@ -105,6 +108,7 @@ class InventoryForm extends HookWidget {
                             ));
                         editingCodigoPrincipal.text = res;
                       },
+                      enabled: editingCodigoPrincipal.text != '001',
                     ),
                   ],
                 ),
@@ -164,17 +168,18 @@ class InventoryForm extends HookWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (item != null)
-                        ShadButton.destructive(
-                          child: const Text('Borrar'),
-                          onPressed: () {
-                            Database()
-                                .eliminarProducto(item.id!)
-                                .whenComplete(() async {
-                              await productoController.productos.refresh();
-                              if (context.mounted) Navigator.pop(context);
-                            });
-                          },
-                        ),
+                        if (editingCodigoPrincipal.text != '001')
+                          ShadButton.destructive(
+                            child: const Text('Borrar'),
+                            onPressed: () {
+                              Database()
+                                  .eliminarProducto(item.id!)
+                                  .whenComplete(() async {
+                                await productoController.productos.refresh();
+                                if (context.mounted) Navigator.pop(context);
+                              });
+                            },
+                          ),
                       ShadButton(
                         child: const Text('Guardar'),
                         onPressed: () {

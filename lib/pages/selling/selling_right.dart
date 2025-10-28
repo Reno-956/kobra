@@ -102,6 +102,16 @@ class SellingRightState extends State<SellingRight> {
               ),
               ShadButton(
                 onPressed: () async {
+                  if (usuario == null) {
+                    ShadToaster.of(context).show(
+                      const ShadToast(
+                        backgroundColor: Colors.red,
+                        title: Text('Acceso denegado'),
+                        description: Text('Debes iniciar sesión para guardar ventas.'),
+                      ),
+                    );
+                    return;
+                  }
                   if (sellingFormKey.currentState!.validate() && tienda.hasValue) {
                     if (tipoPago == TypePayment.qris && cliente == null) {
                       if (context.mounted) {
@@ -377,7 +387,7 @@ class SellingRightState extends State<SellingRight> {
               children: [
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(usuario?.nombre ?? 'Admin'),
+                  title: Text(usuario?.nombre ?? '----------'),
                   subtitle: const Text('Usuario'),
                   trailing: const Icon(Icons.arrow_right),
                   onTap: () => context.push('/home'),

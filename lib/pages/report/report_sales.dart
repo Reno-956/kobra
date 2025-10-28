@@ -1,3 +1,4 @@
+import 'package:due_kasir/pages/report/report_delete_dialog.dart';
 import 'package:due_kasir/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -102,6 +103,23 @@ class ReportSales extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
+                ShadButton.outline(
+                  onPressed: () {
+                    showShadDialog(
+                        context: context,
+                        builder: (context) =>
+                            ReportDeleteDialog(
+                                id: venta.id!));
+                  },
+                  icon: const Padding(
+                    padding: EdgeInsets.only(right: 8),
+                    child: Icon(
+                      Icons.delete,
+                      size: 16,
+                    ),
+                  ),
+                  child: const Text('Borrar'),
                 ),
                 const Divider(),
               ],

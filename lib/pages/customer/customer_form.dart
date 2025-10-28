@@ -22,10 +22,8 @@ class CustomerForm extends HookWidget {
         useTextEditingController(text: cliente?.identificacion ?? '');
     final editingDireccion =
         useTextEditingController(text: cliente?.direccion ?? '');
-    //final status = useState(cliente?.estado ?? TipoEstado.act.message);
     final editingCorreo =
         useTextEditingController(text: (cliente?.correo ?? '').toString());
-    //final editingTipoReceptor = useState(cliente?.tipoReceptor ?? '01');
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -72,8 +70,8 @@ class CustomerForm extends HookWidget {
                   ),
                   ShadInputFormField(
                     controller: editingCorreo,
-                    validator: (val) =>
-                        val.isEmpty == true ? 'Correo is requirido' : null,
+                    /*validator: (val) =>
+                        val.isEmpty == true ? 'Correo is requirido' : null,*/
                     label: const Text('Correo'),
                     placeholder: const Text('usuario@ejemplo.com'),
                     keyboardType: TextInputType.emailAddress,
@@ -83,82 +81,6 @@ class CustomerForm extends HookWidget {
                     label: const Text('Dirección'),
                     placeholder: const Text('Ej: Calle A'),
                   ),
-                  /*Row(
-                    children: [
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Tipo Receptor',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            ShadSelect<String>(
-                              initialValue: cliente?.tipoReceptor,
-                              placeholder:
-                              const Text('Selecciona uno'),
-                              options: [
-                                ...tipoReceptorData.entries.map(
-                                      (e) => ShadOption(
-                                    value: e.key,
-                                    child: Text(e.value),
-                                  ),
-                                ),
-                              ],
-                              onChanged: (String? value) =>
-                              editingTipoReceptor.value = value!,
-                              selectedOptionBuilder: (context, value) =>
-                                  Text(tipoReceptorData[value]!),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 200),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Estado',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                ShadSelect<String>(
-                                  initialValue: cliente?.estado,
-                                  placeholder:
-                                      const Text('Selecciona el estado'),
-                                  options: TipoEstado.values.map((e) {
-                                    return ShadOption(
-                                      value: e.message,
-                                      child: Text(e.message),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? value) {
-                                    if (value != null) {
-                                      status.value = value;
-                                    }
-                                  },
-                                  selectedOptionBuilder: (context, value) {
-                                    final selectedEnum = TipoEstado.values.firstWhere(
-                                          (e) => e.message == value,
-                                      orElse: () => TipoEstado.act,
-                                    );
-                                    return Text(selectedEnum.message);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),*/
                   Align(
                     alignment: Alignment.centerRight,
                     child: Row(

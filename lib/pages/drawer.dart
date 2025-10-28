@@ -51,21 +51,36 @@ class NavDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            ListTile(
-              title: const Text('Vender'),
-              leading: const Icon(Icons.sell_outlined),
-              onTap: () => context.go('/'),
-            ),
-            ListTile(
-              title: const Text('Reporte'),
-              leading: const Icon(Icons.home_repair_service_outlined),
-              onTap: () => context.go('/report'),
-            ),
-            ListTile(
-              title: const Text('Productos'),
-              leading: const Icon(Icons.inventory),
-              onTap: () => context.go('/inventory'),
-            ),
+            if (user != null) ...[
+              ListTile(
+                title: const Text('Vender'),
+                leading: const Icon(Icons.sell_outlined),
+                onTap: () => context.go('/'),
+              ),
+              ListTile(
+                title: const Text('Reporte'),
+                leading: const Icon(Icons.home_repair_service_outlined),
+                onTap: () => context.go('/report'),
+              ),
+              ListTile(
+                title: const Text('Productos'),
+                leading: const Icon(Icons.inventory),
+                onTap: () => context.go('/inventory'),
+              ),
+              if (user?.perfil != TipoPerfil.user.message)
+                ListTile(
+                  title: const Text('Usuarios'),
+                  leading: const Icon(Icons.person_2),
+                  onTap: () => context.go('/users'),
+                ),
+              ListTile(
+                title: const Text('Clientes'),
+                leading: const Icon(Icons.people),
+                onTap: () {
+                  context.go('/customer');
+                },
+              ),
+            ],
             /*ListTile(
               title: const Text('Request'),
               leading: const Icon(Icons.edit_note),
@@ -98,21 +113,8 @@ class NavDrawer extends StatelessWidget {
               onTap: () {
                 context.go('/expenses');
               },
-            ),*/
-            if (user?.perfil != TipoPerfil.user.message)
-              ListTile(
-                title: const Text('Usuarios'),
-                leading: const Icon(Icons.person_2),
-                onTap: () => context.go('/users'),
-              ),
-            ListTile(
-              title: const Text('Clientes'),
-              leading: const Icon(Icons.people),
-              onTap: () {
-                context.go('/customer');
-              },
             ),
-            /*ListTile(
+            ListTile(
               title: const Text('Salaries'),
               leading: const Icon(Icons.account_balance),
               onTap: () {
@@ -202,25 +204,27 @@ class NavDrawer extends StatelessWidget {
                   }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  if (user?.perfil != TipoPerfil.user.message)
-                  const PopupMenuItem<String>(
-                    value: 'restore',
-                    child: Text('Restaurar'),
-                  ),
-                  if (user?.perfil != TipoPerfil.user.message)
-                  const PopupMenuItem<String>(
-                    value: 'backup',
-                    child: Text('Backup'),
-                  ),
-                  if (user?.perfil != TipoPerfil.user.message)
-                  const PopupMenuItem<String>(
-                    value: 'clear',
-                    child: Text('Resetear'),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'store',
-                    child: Text('Tienda'),
-                  ),
+                  if (user != null) ...[
+                    if (user?.perfil != TipoPerfil.user.message)
+                      const PopupMenuItem<String>(
+                        value: 'restore',
+                        child: Text('Restaurar'),
+                      ),
+                    if (user?.perfil != TipoPerfil.user.message)
+                      const PopupMenuItem<String>(
+                        value: 'backup',
+                        child: Text('Backup'),
+                      ),
+                    if (user?.perfil != TipoPerfil.user.message)
+                      const PopupMenuItem<String>(
+                        value: 'clear',
+                        child: Text('Resetear'),
+                      ),
+                    const PopupMenuItem<String>(
+                      value: 'store',
+                      child: Text('Tienda'),
+                    ),
+                  ],
                   if (user == null)
                     const PopupMenuItem<String>(
                       value: 'login',

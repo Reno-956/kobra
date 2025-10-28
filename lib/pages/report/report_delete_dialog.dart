@@ -28,12 +28,12 @@ class _ReportDeleteDialogState extends State<ReportDeleteDialog> {
     return ShadForm(
       key: reportFormKey,
       child: ShadDialog(
-        title: const Text('Delete Report'),
+        title: const Text('Borrar Reporte'),
         description: const Text(
-            "Are you sure to delete this report, this action can't be undo"),
+            "¿Está seguro de que desea eliminar este reporte?, esta acción no se puede revertir."),
         actions: [
           ShadButton(
-              onPressed: () => context.pop(), child: const Text('Cancel')),
+              onPressed: () => context.pop(), child: const Text('Cancelar')),
           ShadButton(
               onPressed: () async {
                 if (reportFormKey.currentState!.validate()) {
@@ -51,7 +51,7 @@ class _ReportDeleteDialogState extends State<ReportDeleteDialog> {
                       const ShadToast(
                         backgroundColor: Colors.red,
                         description: Text(
-                          'Incorrect Password!',
+                          'Contraseña incorrecta!',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -59,18 +59,18 @@ class _ReportDeleteDialogState extends State<ReportDeleteDialog> {
                   }
                 }
               },
-              child: const Text('Delete'))
+              child: const Text('Borrar'))
         ],
         child: Container(
           width: 375,
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: ShadInputFormField(
             controller: _password,
-            label: const Text('Password'),
-            placeholder: const Text('Enter your password'),
+            label: const Text('Contraseña'),
+            placeholder: const Text('Ingrese su contraseña'),
             validator: (v) {
               if (v.length < 2) {
-                return 'Password must be at least 2 characters.';
+                return 'Contraseña debe tener al menos 2 caracteres';
               }
               return null;
             },
